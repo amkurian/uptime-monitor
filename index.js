@@ -3,7 +3,7 @@
 var http = require('http');
 var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder
-
+var config = require('./config')
 
 //server should respond to request with a string
 
@@ -51,14 +51,14 @@ var server = http.createServer(function(req, res){
     	res.writeHead(statusCode);
     	res.end(payloadString);
     	//log the request path
-		  console.log(`The Request is received on ${trimmedPath}  ${buffer}` );
+		  console.log(`The Request is received on ${trimmedPath}  ${buffer}`);
     });
 		
 	})
 });
 
-server.listen(3000, function(){
-  console.log('Server is listening on 3000');
+server.listen(config.port, function(){
+  console.log(`Server is listening on ${config.port} in ${config.envName}`);
 });
 
 //Define a request router

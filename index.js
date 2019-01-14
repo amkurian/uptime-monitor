@@ -1,11 +1,10 @@
-
-//dependencies
 var http = require('http');
 var https = require('https');
 var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var config = require('./config');
 var fs = require('fs');
+var handlers =require('./lib/handlers');
 
 var httpsServerOptions = {
 	'key' : fs.readFileSync('./https/key.pem'),
@@ -81,16 +80,6 @@ var unifiedServer = function(req, res){
 	})
 }
 
-//Define a request router
-var handlers = {}
-
-handlers.ping = function(data,callback){
- callback(200);
-}
-
-handlers.not_found = function(data,callback){
- callback(404, {'name' :'Method Not Found'})
-};
 
 var router = {
 	'ping' : handlers.ping

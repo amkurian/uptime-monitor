@@ -2,9 +2,10 @@ var http = require('http');
 var https = require('https');
 var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
-var config = require('./config');
+var config = require('./lib/config');
 var fs = require('fs');
 var handlers =require('./lib/handlers');
+var helpers = require('./lib/helpers');
 
 var httpsServerOptions = {
 	'key' : fs.readFileSync('./https/key.pem'),
@@ -60,7 +61,7 @@ var unifiedServer = function(req, res){
     	'queryStringObject' : queryStringObject,
     	'method' : method,
     	'headers' : headers,
-      'payload' : buffer
+      'payload' : helpers.parseJsonToObject(buffer)
     }
 
     //route the request to handler
@@ -79,8 +80,16 @@ var unifiedServer = function(req, res){
 		
 	})
 }
-
+var parseJsonToObject = function(str){
+  try{
+    var obj = JSON.parse(str);
+    return obj;
+  } catch(e){
+    return {};
+  }
+};
 
 var router = {
-	'ping' : handlers.ping
+	'ping' : handlers.ping,
+	'users' : handlers.users
 }

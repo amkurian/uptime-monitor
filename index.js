@@ -29,13 +29,48 @@ var server = http.createServer(function(req, res){
 
 	req.on('end', function(){
     buffer += decoder.end();
-    //Send the response
-	  res.end('hello');
-		//log the request path
-		console.log(`The Request is received on ${trimmedPath}  ${buffer}` );
+    //Choose handler
+    var chosenHandler = typeof(router[trimmedPath]) != 'undefined' ? router[trimmedPath] : handlers.not_found
+    //Construct data object that send to handler
+    var data = {
+    	'trimmedPath' : trimmedPath,
+    	'queryStringObject' : queryStringObject,
+    	'method' : method,
+    	'headers' : headers,
+      'payload' : buffer
+    }
+
+    //route the request to handler
+    chosenHandler(data, function(statusCode, payload){
+    	statusCode = typeof(statusCode) == 'number' ? statusCode : 200
+    	payload = typeof(payload) == 'object' ? payload : {}
+
+    	payloadString = JSON.stringify(payload);
+    	//Send the response
+    	res.writeHead(statusCode);
+    	res.end(payloadString);
+    	//log the request path
+		  console.log(`The Request is received on ${trimmedPath}  ${buffer}` );
+    });
+		
 	})
 });
 
 server.listen(3000, function(){
   console.log('Server is listening on 3000');
 });
+
+//Define a request router
+var handlers = {}
+
+handlers.sample = function(data, callback){
+	//callback a http status code and a payload object
+	callback(406, {'name' :'my name is sample'})
+};
+handlers.not_found = function(data,callback){
+ callback(404, {'name' :'Method Not Found'})
+};
+
+var router = {
+	'sample' : handlers.sample
+}

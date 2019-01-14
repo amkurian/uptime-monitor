@@ -53,6 +53,7 @@ var unifiedServer = function(req, res){
 	req.on('end', function(){
     buffer += decoder.end();
     //Choose handler
+    console.log(trimmedPath);
     var chosenHandler = typeof(router[trimmedPath]) != 'undefined' ? router[trimmedPath] : handlers.not_found
     //Construct data object that send to handler
     var data = {
@@ -83,14 +84,14 @@ var unifiedServer = function(req, res){
 //Define a request router
 var handlers = {}
 
-handlers.sample = function(data, callback){
-	//callback a http status code and a payload object
-	callback(406, {'name' :'my name is sample'})
-};
+handlers.ping = function(data,callback){
+ callback(200);
+}
+
 handlers.not_found = function(data,callback){
  callback(404, {'name' :'Method Not Found'})
 };
 
 var router = {
-	'sample' : handlers.sample
+	'ping' : handlers.ping
 }

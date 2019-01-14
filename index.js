@@ -71,7 +71,6 @@ var unifiedServer = function(req, res){
 
     	payloadString = JSON.stringify(payload);
     	//Send the response
-    	res.setHeader('Content-Type','application/json');
     	res.writeHead(statusCode);
     	res.end(payloadString);
     	//log the request path
